@@ -4,8 +4,12 @@ import axios from "axios"
 const App = () => {
   const [filter, setFilter] = useState("")
   const [allCountries, setAllCountries] = useState([])
+  const [detailsToShow, setDetailsToShow] = useState()
 
-  const handleFilter = (e) => setFilter(e.target.value)
+  const handleFilter = (e) => {
+    setFilter(e.target.value)
+    setDetailsToShow()
+  }
 
   useEffect(() => {
     axios
@@ -27,7 +31,9 @@ const App = () => {
     ? allCountries.filter(country => country.name.toUpperCase().includes(filter.toUpperCase()))
     : []
 
-  console.log(countriesToShow)
+  const showDetails = (e) => {
+    setDetailsToShow(countriesToShow.find(country => country.name === e.target.name))
+  }
 
   let display
   if (countriesToShow) {
@@ -46,17 +52,28 @@ const App = () => {
           <img src={countriesToShow[0].flag} alt="flag" />
         </div>
     } else {
-      display = <div>{countriesToShow.map(country => <p key={country.name}>{country.name}</p>)}</div>
+      display =
+        <div>
+          {countriesToShow.map(country => <div key={country.name}><span>{country.name}</span><button name={country.name} onClick={showDetails}>show</button></div>)}
+        </div>
     }
   }
+
 
   return (
     <div>
       find countries <input value={filter} onChange={handleFilter} />
       {display}
-      {/* {countriesToShow.length > 10
-        ? <p>Too many matches, specify another filter</p>
-        : countriesToShow.map(country => <p key={country.name}>{country.name}</p>)} */}
+      {detailsToShow && <div>
+        <h1>{detailsToShow.name}</h1>
+        <p>capital {detailsToShow.capital}</p>
+        <p>population {detailsToShow.population}</p>
+        <h2>languages</h2>
+        <ul>
+          {detailsToShow.languages.map(language => <li key={language}>{language}</li>)}
+        </ul>
+        <img src={detailsToShow.flag} alt="flag" />
+      </div>}
     </div>
   )
 }
