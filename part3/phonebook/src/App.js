@@ -27,15 +27,24 @@ const App = () => {
 
   const addContact = (e) => {
     e.preventDefault()
+
+    const newPerson = {
+      name: newName,
+      number: newNumber
+    }
     const found = persons.find(person => person.name === newName)
     if (found) {
-      window.alert(`${newName} is already added to phonebook`)
-    } else {
-      const newPerson = {
-        name: newName,
-        number: newNumber
+      // window.alert(`${newName} is already added to phonebook`)
+      if (window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)) {
+        personService
+          .update(found.id, newPerson)
+          .then(returnPerson => {
+            setPersons(persons.map(person => person.id !== found.id ? person : returnPerson))
+            setNewName('')
+            setNewNumber('')
+          })
       }
-
+    } else {
       personService
         .create(newPerson)
         .then(returnedPerson => {
