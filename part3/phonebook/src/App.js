@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import PersonForm from './components/PersonForm'
-import Person from './components/Person'
+import Persons from './components/Persons'
 import Filter from './components/Filter'
 import axios from 'axios'
 
@@ -28,7 +28,18 @@ const App = () => {
     if (found) {
       window.alert(`${newName} is already added to phonebook`)
     } else {
-      setPersons(persons.concat({ name: newName, number: newNumber }))
+      const newPerson = {
+        name: newName,
+        number: newNumber
+      }
+      axios
+        .post("http://localhost:3001/persons", newPerson)
+        .then(response => {
+          setPersons(persons.concat(response.data))
+          setNewName('')
+          setNewNumber('')
+        })
+      // setPersons(persons.concat({ name: newName, number: newNumber }))
     }
 
   }
@@ -44,7 +55,7 @@ const App = () => {
       <h2>add a new</h2>
       <PersonForm name={newName} handleName={handleName} number={newNumber} handleNumber={handleNumber} submit={addContact} />
       <h2>Numbers</h2>
-      <Person personsToShow={personsToShow} />
+      <Persons personsToShow={personsToShow} />
     </div>
   )
 }
