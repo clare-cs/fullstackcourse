@@ -55,6 +55,14 @@ const App = () => {
 
   }
 
+  const deletePersonOf = (name, id) => {
+    if (window.confirm(`Delete ${name}?`)) {
+      personService
+        .deletePerson(id)
+        .then(setPersons(persons.filter(person => person.id !== id)))
+    }
+  }
+
   const personsToShow = filter
     ? persons.filter(person => person.name.toUpperCase().includes(filter.toUpperCase()))
     : persons
@@ -66,7 +74,7 @@ const App = () => {
       <h2>add a new</h2>
       <PersonForm name={newName} handleName={handleName} number={newNumber} handleNumber={handleNumber} submit={addContact} />
       <h2>Numbers</h2>
-      <Persons personsToShow={personsToShow} />
+      <Persons personsToShow={personsToShow} deletePerson={deletePersonOf} />
     </div>
   )
 }
