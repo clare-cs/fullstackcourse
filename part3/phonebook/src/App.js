@@ -11,6 +11,7 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('')
   const [filter, setFilter] = useState('')
   const [message, setMessage] = useState()
+  const [messageType, setMessageType] = useState()
 
   useEffect(() => {
     personService
@@ -44,7 +45,16 @@ const App = () => {
             setPersons(persons.map(person => person.id !== found.id ? person : returnPerson))
             setNewName('')
             setNewNumber('')
+            setMessageType('success')
             setMessage(`Updated ${found.name}`)
+            setTimeout(() => {
+              setMessage(null)
+            }, 5000)
+          })
+          .catch(error => {
+            setMessageType('error')
+            setMessage(`Information of ${found.name} has already been removed from server.`)
+            setPersons(persons.filter(person => person.id !== found.id))
             setTimeout(() => {
               setMessage(null)
             }, 5000)
@@ -57,6 +67,7 @@ const App = () => {
           setPersons(persons.concat(returnedPerson))
           setNewName('')
           setNewNumber('')
+          setMessageType('success')
           setMessage(`Added ${newName}`)
           setTimeout(() => {
             setMessage(null)
@@ -89,7 +100,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <Notification message={message} />
+      <Notification message={message} type={messageType} />
       <Filter filter={filter} handleFilter={handleFilter} />
       <h2>add a new</h2>
       <PersonForm name={newName} handleName={handleName} number={newNumber} handleNumber={handleNumber} submit={addContact} />
