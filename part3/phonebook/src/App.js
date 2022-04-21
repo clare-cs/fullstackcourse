@@ -3,12 +3,14 @@ import PersonForm from './components/PersonForm'
 import Persons from './components/Persons'
 import Filter from './components/Filter'
 import personService from './components/services/persons'
+import Notification from './components/Notification'
 
 const App = () => {
   const [persons, setPersons] = useState([])
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [filter, setFilter] = useState('')
+  const [message, setMessage] = useState()
 
   useEffect(() => {
     personService
@@ -42,6 +44,10 @@ const App = () => {
             setPersons(persons.map(person => person.id !== found.id ? person : returnPerson))
             setNewName('')
             setNewNumber('')
+            setMessage(`Updated ${found.name}`)
+            setTimeout(() => {
+              setMessage(null)
+            }, 5000)
           })
       }
     } else {
@@ -51,6 +57,10 @@ const App = () => {
           setPersons(persons.concat(returnedPerson))
           setNewName('')
           setNewNumber('')
+          setMessage(`Added ${newName}`)
+          setTimeout(() => {
+            setMessage(null)
+          }, 5000)
         })
       // axios
       //   .post("http://localhost:3001/persons", newPerson)
@@ -79,6 +89,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={message} />
       <Filter filter={filter} handleFilter={handleFilter} />
       <h2>add a new</h2>
       <PersonForm name={newName} handleName={handleName} number={newNumber} handleNumber={handleNumber} submit={addContact} />
